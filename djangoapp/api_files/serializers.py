@@ -7,25 +7,31 @@ def alphanumberic(value):
         raise serializers.ValidationError("enter alphanumberic value")
 
 
-class CarSerializer(serializers.Serializer):
-    id= serializers.IntegerField(read_only=True)
-    name=serializers.CharField()
-    description=serializers.CharField()
-    active=serializers.BooleanField(read_only=True)
-    chassisnumber=serializers.CharField(validators=[alphanumberic])
-    price=serializers.DecimalField(max_digits=9,decimal_places=2)
+class CarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Carlist
+        fields="__all__"
 
-    def create(self,validated_data):
-        return Carlist.objects.create(**validated_data)
 
-    def update(self, instance,validated_data):
-        instance.name=validated_data.get('name',instance.name)
-        instance.description=validated_data.get('description',instance.description)
-        instance.active=validated_data.get('active',instance.active)
-        instance.chassisnumber=validated_data.get('chassisnumber',instance.chassisnumber)
-        instance.price=validated_data.get('price',instance.price)
-        instance.save()
-        return instance
+
+    # id= serializers.IntegerField(read_only=True)
+    # name=serializers.CharField()
+    # description=serializers.CharField()
+    # active=serializers.BooleanField(read_only=True)
+    # chassisnumber=serializers.CharField(validators=[alphanumberic])
+    # price=serializers.DecimalField(max_digits=9,decimal_places=2)
+
+    # def create(self,validated_data):
+    #     return Carlist.objects.create(**validated_data)
+
+    # def update(self, instance,validated_data):
+    #     instance.name=validated_data.get('name',instance.name)
+    #     instance.description=validated_data.get('description',instance.description)
+    #     instance.active=validated_data.get('active',instance.active)
+    #     instance.chassisnumber=validated_data.get('chassisnumber',instance.chassisnumber)
+    #     instance.price=validated_data.get('price',instance.price)
+    #     instance.save()
+    #     return instance
 
     #Field level validation
 

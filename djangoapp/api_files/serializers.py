@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from ..models import Carlist
+from decimal import Decimal
 
 
 def alphanumberic(value):
@@ -8,9 +9,16 @@ def alphanumberic(value):
 
 
 class CarSerializer(serializers.ModelSerializer):
+    discounted_price=serializers.SerializerMethodField()
+
     class Meta:
         model= Carlist
         fields="__all__"
+
+    def get_discounted_price(self,object):
+        if object.price is not None:
+            discountprice=object.price-Decimal('5000.00')
+            return discountprice
 
 
 

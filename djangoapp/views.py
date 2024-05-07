@@ -41,7 +41,7 @@ def car_list_view(request):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.error)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','PUT','DELETE'])
 def car_details(request,pk):
@@ -59,7 +59,7 @@ def car_details(request,pk):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     if request.method=='DELETE':
         car=Carlist.objects.get(pk=pk)
         car.delete()

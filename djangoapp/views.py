@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .api_files.serializers import CarSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 # Create your views here.
 
 
@@ -42,10 +43,13 @@ def car_list_view(request):
         else:
             return Response(serializer.error)
 
-@api_view(['GET','PUT'])
+@api_view(['GET','PUT','DELETE'])
 def car_details(request,pk):
     if request.method=='GET':
-        car=Carlist.objects.get(pk=pk)
+        try:
+            car=Carlist.objects.get(pk=pk)
+        except:
+            return Response('Error:Car not found')
         serializer=CarSerializer(car)
         return Response(serializer.data)
     if request.method=='PUT':
@@ -55,5 +59,9 @@ def car_details(request,pk):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.error)
+            return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
+    if request.method=='DELETE':
+        car=Carlist.objects.get(pk=pk)
+        car.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 

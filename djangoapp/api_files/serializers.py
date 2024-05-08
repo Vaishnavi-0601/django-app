@@ -56,6 +56,14 @@ class CarSerializer(serializers.ModelSerializer):
 
 
 class ShowroomSerializer(serializers.ModelSerializer):
+    #showrooms=CarSerializer(many=True,read_only=True)
+    # showrooms=serializers.StringRelatedField(many=True)
+    # showrooms=serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    showrooms=serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='car_detail'
+    )
     class Meta:
         model=Showroomlist
         fields='__all__'

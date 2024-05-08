@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Carlist
+from .models import Carlist,Showroomlist
 from django.http import JsonResponse
 from django.http import HttpResponse
-from .api_files.serializers import CarSerializer
+from .api_files.serializers import CarSerializer,ShowroomSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.views import APIView
 # Create your views here.
 
 
@@ -65,3 +66,38 @@ def car_details(request,pk):
         car.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class Showroom_view(APIView):
+    def get(self,request):
+        showroom=Showroomlist.objects.all()
+        serializer=ShowroomSerializer(showroom,many=True)
+        return Response(serializer.data)
+
+    def post(self,request):
+        serializer=ShowroomSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+            
+class Showroom_particular(APIView):
+
+    def get(self,request,pk):
+        try:
+            showroom=Showroomlist.objects.get(pk=pk)
+            serializer=ShowroomSerializer(showroom)
+            return Response(serializer.data)
+        except:
+            return Response('error:no showroom',status=status.HTTP_400_BAD_REQUEST) 
+
+    def put(self,request,pk):
+        showroom=Showroomlist.objects.get(pk=pk)
+        serializer=ShowroomSerializer(showroom,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors,status=status.HTTP_204_NO_CONTENT)
+    
+    def delete(self,request,pk):
+        showroom=Showroomlist.objects.get(pk=pk)
+        showroom.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Carlist
+from ..models import Carlist,Showroomlist
 from decimal import Decimal
 
 
@@ -53,3 +53,9 @@ class CarSerializer(serializers.ModelSerializer):
         if data['name']==data['description']:
             raise serializers.ValidationError("name not equal to description")
         return data
+
+
+class ShowroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Showroomlist
+        fields='__all__'

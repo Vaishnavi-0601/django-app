@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Carlist,Showroomlist
+from ..models import Carlist,Showroomlist,Review
 from decimal import Decimal
 
 
@@ -7,9 +7,15 @@ def alphanumberic(value):
     if not str(value).isalnum():
         raise serializers.ValidationError("enter alphanumberic value")
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Review
+        fields='__all__'
+
 
 class CarSerializer(serializers.ModelSerializer):
     discounted_price=serializers.SerializerMethodField()
+    Reviews=ReviewSerializer(many=True,read_only=True)
 
     class Meta:
         model= Carlist
@@ -67,3 +73,4 @@ class ShowroomSerializer(serializers.ModelSerializer):
     class Meta:
         model=Showroomlist
         fields='__all__'
+

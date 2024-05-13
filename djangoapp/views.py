@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .models import Carlist,Showroomlist
+from .models import Carlist,Showroomlist,Review
 from django.http import JsonResponse
 from django.http import HttpResponse
-from .api_files.serializers import CarSerializer,ShowroomSerializer
+from .api_files.serializers import CarSerializer,ShowroomSerializer,ReviewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -101,3 +101,18 @@ class Showroom_particular(APIView):
         showroom=Showroomlist.objects.get(pk=pk)
         showroom.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class Review_view(APIView):
+    def get(self,request):
+        review=Review.objects.all()
+        serializer=ReviewSerializer(review,many=True)
+       
+        return Response(serializer.data)
+        
+
+    def post(self,request):
+        serializer=ReviewSerializer(review,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)

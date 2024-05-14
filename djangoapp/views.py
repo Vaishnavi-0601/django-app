@@ -7,6 +7,31 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.authentication import BasicAuthentication,SessionAuthentication
+from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser,DjangoModelPermissions
+from rest_framework import mixins
+from rest_framework import generics
+
+class ReviewDetail(mixins.RetrieveModelMixin,generics.GenericAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+class ReviewList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    authentication_classes=[SessionAuthentication]
+    permission_classes=[DjangoModelPermissions]
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 # Create your views here.
 
 
@@ -67,6 +92,10 @@ def car_details(request,pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class Showroom_view(APIView):
+    authentication_classes=[SessionAuthentication]
+    permission_classes=[IsAuthenticated]
+    # permission_classes=[AllowAny]
+    # permission_classes=[IsAdminUser]
     def get(self,request):
         showroom=Showroomlist.objects.all()
         serializer=ShowroomSerializer(showroom,many=True,context={'request': request})
